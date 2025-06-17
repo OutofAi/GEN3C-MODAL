@@ -90,10 +90,11 @@ NUM_GPUS = 1
 
 @app.cls(
     image=full_image,
-    gpu="A100-80GB",
+    gpu=f"A100-80GB:{NUM_GPUS}",
     timeout=3000,
     cpu=2 * NUM_GPUS,
     volumes={"/root/data": volume_1, "/root/output": volume_2},
+    # volumes={"/root/data": volume_1},
     secrets=[modal.Secret.from_name("huggingface-secret")]
 )
 class COSMOS:
@@ -142,6 +143,7 @@ cosmos = COSMOS(
     timeout=3000,
     cpu=2 * NUM_GPUS,
     volumes={"/root/data": volume_1, "/root/output": volume_2},
+    # volumes={"/root/data": volume_1},
     secrets=[modal.Secret.from_name("huggingface-secret")]
 )
 @modal.concurrent(max_inputs=1000)  # Gradio can handle many async inputs
@@ -160,50 +162,68 @@ def ui():
     def run_and_fetch(inp, traj, dist, rot, guid, session_id):
 
         mp4_path = cosmos.run.remote(inp, traj, dist, rot, guid, session_id)
-        volume_1.reload()
+        volume_2.reload()
         return mp4_path
     
     def download_data():
         login_huggingface()
         download_checkpoints(cosmos.checkpoint_dir)
-        return gr.update(interactive=False)
+        return gr.update(interactive=False), gr.update(interactive=True)
 
-    with gr.Blocks() as demo:
+    css = """
+    #col-container {
+        margin: 0 auto;
+        max-width: 1024px;
+    }
+    """
+
+    with gr.Blocks(css=css) as demo:
 
         session_state = gr.State()
         demo.load(start_session, outputs=[session_state])
         has_checkpoints = any(os.scandir(cosmos.checkpoint_dir))
 
-        gr.Markdown("## Cosmos Predict1 Video-to-World")
-        gr.Markdown("Upload an image and click Run to generate a 3D camera-moved video.")
-        with gr.Row():
-            with gr.Column():
-                inp_image = gr.Image(label="Input Image", type="pil") 
+        gr.HTML(
+            """
+            <div style="text-align: center;">
+                <p style="font-size:16px; display: inline; margin: 0;">
+                    <strong>GEN3C:</strong> 3D-Informed World-Consistent Video Generation with Precise Camera Control
+                </p>
+                <a href="https://github.com/nv-tlabs/GEN3C" style="display: inline-block; vertical-align: middle; margin-left: 0.5em;">
+                    <img src="https://img.shields.io/badge/GitHub-Repo-blue" alt="GitHub Repo">
+                </a>
+            </div>
+            """
+        )
+        with gr.Column(elem_id="col-container"):
+            with gr.Row():
+                with gr.Column():
+                    inp_image = gr.Image(label="Input Image(Preferred Resolution 1280x720)", type="pil") 
 
-                trajectory = gr.Dropdown(
-                    choices=["left", "right", "up", "down", "zoom_in", "zoom_out", "clockwise", "counterclockwise", "none"],
-                    value="left",
-                    label="Trajectory"
-                )
-                download_btn = gr.Button("Download Checkpoints", interactive=not has_checkpoints)
-                run_btn = gr.Button("Move Camera", variant="primary")
+                    trajectory = gr.Dropdown(
+                        choices=["left", "right", "up", "down", "zoom_in", "zoom_out", "clockwise", "counterclockwise", "none"],
+                        value="left",
+                        label="Trajectory"
+                    )
+                    download_btn = gr.Button("Download Checkpoints", interactive=not has_checkpoints)
+                    run_btn = gr.Button("Move Camera", variant="primary", interactive=has_checkpoints)
 
-                move_dist = gr.Slider(0.0, 1.0, value=0.3, label="Movement Distance")
-                cam_rot = gr.Radio(
-                    choices=["center_facing", "no_rotation", "trajectory_aligned"],
-                    value="center_facing",
-                    label="Camera Rotation"
-                )
-                guidance = gr.Slider(0.0, 10.0, value=1.0, label="Guidance Scale")
+                    move_dist = gr.Slider(0.0, 1.0, value=0.3, label="Movement Distance")
+                    cam_rot = gr.Radio(
+                        choices=["center_facing", "no_rotation", "trajectory_aligned"],
+                        value="center_facing",
+                        label="Camera Rotation"
+                    )
+                    guidance = gr.Slider(0.0, 10.0, value=1.0, label="Guidance Scale")
 
-            with gr.Column():
-                    output_video = gr.Video(label="Generated Video")
+                with gr.Column():
+                        output_video = gr.Video(label="Generated Video")
 
         
         download_btn.click(
             fn=download_data,
             inputs=[],
-            outputs=[download_btn]          
+            outputs=[download_btn, run_btn]          
         )
         run_btn.click(
             fn=run_and_fetch,
