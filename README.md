@@ -1,4 +1,5 @@
-This the Gradio variation of https://github.com/nv-tlabs/GEN3C to run on modal.com.
+This the Gradio variation of https://github.com/nv-tlabs/GEN3C to run on https://modal.com/. Currently Running on a Single A100-80GB GPU 
+with inference time for each clip around 10 mins (Multi GPU coming soon)
 Make sure you have Modal module installed
 
 ```
