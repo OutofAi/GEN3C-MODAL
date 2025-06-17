@@ -2,7 +2,7 @@ This the Gradio variation of https://github.com/nv-tlabs/GEN3C to run on modal.c
 Make sure you have Modal module installed
 
 ```
-pip install Modal
+python3 -m pip install Modal
 ```
 
 and also set up correctly
