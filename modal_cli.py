@@ -8,7 +8,8 @@ from fastapi import FastAPI
 import shutil
 
 base_image =  Image.from_registry("nvcr.io/nvidia/pytorch:24.10-py3")
-volume = modal.Volume.from_name("gen3c-data", create_if_missing=True)
+volume_1 = modal.Volume.from_name("gen3c-data", create_if_missing=True)
+volume_2 = modal.Volume.from_name("gen3c-results", create_if_missing=True)
 
 def login_huggingface():
     from huggingface_hub import login
@@ -92,7 +93,7 @@ NUM_GPUS = 1
     gpu="A100-80GB",
     timeout=3000,
     cpu=2 * NUM_GPUS,
-    volumes={"/root/output": volume},
+    volumes={"/root/data": volume_1, "/root/output": volume_2},
     secrets=[modal.Secret.from_name("huggingface-secret")]
 )
 class COSMOS:
@@ -122,25 +123,25 @@ class COSMOS:
         output_path = os.path.join(session_dir, f"{file_id}.mp4")
         input_image.save(input_path)
 
-        volume.commit()
+        volume_2.commit()
 
         from cosmos_predict1.diffusion.inference.gen3c_single_image import run_full_demo
 
         result = run_full_demo(self.pipeline, self.moge_model, self.device, input_path, output_path, trajectory, movement_distance, camera_rotation, guidance)
 
-        volume.commit()
+        volume_2.commit()
 
         return result
     
 cosmos = COSMOS(
-    checkpoint_dir="/root/output/checkpoints",
+    checkpoint_dir="/root/data/checkpoints",
 )
 
 @app.function(
     image=full_image,
     timeout=3000,
     cpu=2 * NUM_GPUS,
-    volumes={"/root/output": volume},
+    volumes={"/root/data": volume_1, "/root/output": volume_2},
     secrets=[modal.Secret.from_name("huggingface-secret")]
 )
 @modal.concurrent(max_inputs=1000)  # Gradio can handle many async inputs
@@ -159,7 +160,7 @@ def ui():
     def run_and_fetch(inp, traj, dist, rot, guid, session_id):
 
         mp4_path = cosmos.run.remote(inp, traj, dist, rot, guid, session_id)
-        volume.reload()
+        volume_1.reload()
         return mp4_path
     
     def download_data():
