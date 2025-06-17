@@ -16,3 +16,6 @@ you would also need a huggingface Token set a Secret with the name HF_TOKEN on m
 ```
 python3 -m modal deploy modal_cli.py
 ```
+
+The first time runnning the Gradio interface, you would need to dowload the models on Modal's storage by clicking Download Checkpoints
+before running inference, it's 70+ GB of data and then after you wouldn't need to download it anymore as it gets stored on the given volume
