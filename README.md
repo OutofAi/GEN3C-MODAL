@@ -1,7 +1,7 @@
 # GRADIO GEN3C: 3D-Informed World-Consistent Video Generation with Precise Camera Control
 
 This the Gradio variation of https://github.com/nv-tlabs/GEN3C to run on https://modal.com/. Currently Running on a Single A100-80GB GPU 
-with inference time for each clip around 10 mins. Modal offers 30 dollars for free for GPU computing which is more than enough to run this
+with inference time for each clip around ~15 mins. Modal offers 30 dollars for free for GPU computing which is more than enough to run this
 model for couple of inferences!
 
 Make sure you have Modal module installed
