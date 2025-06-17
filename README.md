@@ -25,4 +25,5 @@ python3 -m modal deploy modal_cli.py
 The first time runnning the Gradio interface, you would need to dowload the models on Modal's storage by clicking Download Checkpoints
 before running inference, it's 70+ GB of data and then after you wouldn't need to download it anymore as it gets stored on the given volume
 
-![image](https://github.com/user-attachments/assets/9f49a44d-3d6b-4c5f-aadb-3f543223c43b)
+![image](https://github.com/user-attachments/assets/500115f7-efb7-42f7-9e9b-e8cb202a988e)
+
