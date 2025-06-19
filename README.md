@@ -5,7 +5,7 @@ with inference time for each clip around ~15 mins. Modal offers 30 dollars for f
 model for couple of inferences!
 
 Make sure you have Modal module installed
-
+You have to always make sure that you have requested access to https://huggingface.co/nvidia/Cosmos-Tokenize1-CV8x8x8-720p repo as it's a gated repo
 ```
 python3 -m pip install Modal
 ```
