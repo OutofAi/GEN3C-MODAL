@@ -29,6 +29,8 @@ cd GEN3C-MODAL
 ```
 python3 -m modal deploy modal_cli.py
 ```
+After deployment you will be provided with a link that's going to look something like this https://{username}--gen3c-ui.modal.run
+navigate to that page to find you Gradio setup
 
 The first time runnning the Gradio interface, you would need to dowload the models on Modal's storage by clicking Download Checkpoints
 before running inference, it's 70+ GB of data and then after you wouldn't need to download it anymore as it gets stored on the given volume
