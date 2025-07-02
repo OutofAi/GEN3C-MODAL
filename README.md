@@ -29,7 +29,10 @@ cd GEN3C-MODAL
 ```
 python3 -m modal deploy modal_cli.py
 ```
-After deployment you will be provided with a link that's going to look something like this https://{username}--gen3c-ui.modal.run
+After deployment you will be provided with a link that's going to look something like this 
+
+https://{username}--gen3c-ui.modal.run
+
 navigate to that page to find you Gradio setup
 
 The first time runnning the Gradio interface, you would need to dowload the models on Modal's storage by clicking Download Checkpoints
