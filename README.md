@@ -23,6 +23,10 @@ git clone https://github.com/OutofAi/GEN3C-MODAL
 ```
 
 ```
+cd GEN3C-MODAL
+```
+
+```
 python3 -m modal deploy modal_cli.py
 ```
 
