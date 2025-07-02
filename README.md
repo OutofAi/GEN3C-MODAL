@@ -19,6 +19,10 @@ python3 -m modal setup
 you would also need a huggingface Token set a Secret with the name HF_TOKEN on modal dashboard then simply deploy the model
 
 ```
+git clone https://github.com/OutofAi/GEN3C-MODAL
+```
+
+```
 python3 -m modal deploy modal_cli.py
 ```
 
