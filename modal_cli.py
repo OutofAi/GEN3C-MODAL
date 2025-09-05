@@ -181,8 +181,14 @@ def ui():
 
         session_state = gr.State()
         demo.load(start_session, outputs=[session_state])
-        has_checkpoints = any(os.scandir(cosmos.checkpoint_dir))
 
+        # ensure the dir exists in *this* container before scanning it
+        os.makedirs(cosmos.checkpoint_dir, exist_ok=True)
+        try:
+            has_checkpoints = any(os.scandir(cosmos.checkpoint_dir))
+        except FileNotFoundError:
+            has_checkpoints = False
+        
         gr.HTML(
             """
             <div style="text-align: center;">
@@ -234,3 +240,4 @@ def ui():
         demo.unload(cleanup)
     fastapi_app = FastAPI(title="GEN3C")
     return mount_gradio_app(fastapi_app, blocks=demo, path="/")
+
