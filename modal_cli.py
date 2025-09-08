@@ -80,7 +80,7 @@ full_image = (base_image.run_commands("pip uninstall -y grpclib grpcio").pip_ins
                 "transformers==4.49.0", 
                 "warp-lang==1.7.2")
             .run_commands("pip install git+https://github.com/microsoft/MoGe.git")
-            .run_commands("pip install git+https://github.com/OutofAi/GEN3C.git")
+            .run_commands("pip install git+https://github.com/OutofAi/GEN3C.git", force_build = True)
             )
 
 app = modal.App(
@@ -240,4 +240,5 @@ def ui():
         demo.unload(cleanup)
     fastapi_app = FastAPI(title="GEN3C")
     return mount_gradio_app(fastapi_app, blocks=demo, path="/")
+
 
