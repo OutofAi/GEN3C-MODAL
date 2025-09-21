@@ -60,7 +60,7 @@ full_image = (base_image.run_commands("pip uninstall -y grpclib grpcio").pip_ins
                 "imageio[pyav,ffmpeg]==2.37.0", 
                 "iopath==0.1.10", "ipdb==0.13.13", 
                 "loguru==0.7.2", "mediapy==1.2.2", 
-                "megatron-core==0.10.0", "nltk==3.9.1",
+                "megatron-core==0.11.0", "nltk==3.9.1",
                 "numpy==1.26.4", 
                 "nvidia-ml-py==12.535.133", 
                 "omegaconf==2.3.0", 
@@ -240,5 +240,6 @@ def ui():
         demo.unload(cleanup)
     fastapi_app = FastAPI(title="GEN3C")
     return mount_gradio_app(fastapi_app, blocks=demo, path="/")
+
 
 
